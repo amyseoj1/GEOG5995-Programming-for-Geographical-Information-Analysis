@@ -39,9 +39,7 @@ for j in range(num_of_iterations):
             agents[i][1] = (agents[i][1] - 1) % 100
             
             
-    
-    
-    dist = (((agents[i+1][0] - agents[i][0])**2) + ((agents[i+1][1] - agents[i][1])**2))**0.5
+    dist = (((agents[0][0] - agents[1][0])**2) + ((agents[0][1] - agents[1][1])**2))**0.5
     print(dist)
     
 
