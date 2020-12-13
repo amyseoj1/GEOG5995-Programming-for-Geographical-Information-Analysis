@@ -1,74 +1,119 @@
-# -*- coding: utf-8 -*-
-# Author: Amy Jungmin Seo
-# Practical 1
-# Goals: 
+# Author: Amy Seo
+# Practical 5: copy this into your model.py file.
 
-# 1. builds a series of agents in space
-# 2. each agent will have a list of the other agents so they can communicate;
-# 3. each agent will know about the environment it is in and be able to query/change the environment;
-# 4. agents will move around the environment eating it, but checking first that other agents aren't already in the neighbourhood;
-#    the environment will contain data from a file;
-# 5. we'll display the environment and other data after the model has run;
-# 6. we'll be able to save the environment as results of the model.
-
-# import random
 
 import random
-
-# Make a y variable.
-
-y0 = 50
-
-
-# Make a x variable.
-
-x0 = 50
+import operator
+import matplotlib.pyplot
+import matplotlib.animation
+import agentframework
 
 
-# Change y and x based on random numbers.
+num_of_agents = 10
+num_of_iterations = 100
+neighbourhood = 20 # Practical 7: Communication 
+
+f = open("/Users/appleseo/Downloads/GEOG5995/GEOG5995-Programming-for-Geographical-Information-Analysis/in.txt")
 
 
-if random.random() < 0.5:
-    y0 = y0 + 1
-else:
-    y0 = y0 - 1
+environment = []
+rowlist = [] 
+for line in f:
+  
+    value = str.split(line,",")
+
+
+    for num in value:
+        rowlist.append(float(num))
+    environment.append(rowlist)
+print(rowlist)
+print(environment)
+
+agents = []
+
+# Make the agents.
+for i in range(num_of_agents):  
+    #agents.append(agentframework.Agent())
+    agents.append(agentframework.Agent(environment,agents, neighbourhood))
     
+
+
+# Move the agents.
+for j in range(num_of_iterations):
+    for i in range(num_of_agents):
+        agents[i].move()
+        agents[i].eat()
+        agents[i].share_with_neighbours(neighbourhood)
+
+# Plot 
+
+matplotlib.pyplot.xlim(0, 99)
+matplotlib.pyplot.ylim(0, 99)
+matplotlib.pyplot.imshow(environment)
+
+# Animation figure
+
+fig = matplotlib.pyplot.figure(figsize=(7, 7))
+ax = fig.add_axes([0, 0, 1, 1])
+carry_on = True	
+
+def update(frame_number):
     
-if random.random() < 0.5:
-    x0 = x0 + 1
-else:
-    x0 = x0 - 1
+    fig.clear()   
+    global carry_on
     
+    for i in range(num_of_agents):
+        if random.random() < 0.5:
+            agents[i][0]  = (agents[i][0] + 1) % 99 
+        else:
+            agents[i][0]  = (agents[i][0] - 1) % 99
+        
+        if random.random() < 0.5:
+            agents[i][1]  = (agents[i][1] + 1) % 99 
+        else:
+            agents[i][1]  = (agents[i][1] - 1) % 99 
+        
+    if random.random() < 0.1:
+        carry_on = False
+        print("stopping condition")
     
-print(y0, x0)
-    
-# Make a second set of y and xs, and make these change randomly as well.
+    for i in range(num_of_agents):
+        matplotlib.pyplot.scatter(agents[i][0],agents[i][1])
+        #print(agents[i][0],agents[i][1])
 
-if random.random() < 0.5:
-    y1 = y0 + 1
-else:
-    y1 = y0 - 1
-    
-    
-if random.random() < 0.5:
-    x1 = x0 + 1
-else:
-    x1 = x0 - 1
-    
-print(y1,x1)
+		
+def gen_function(b = [0]):
+    a = 0
+    global carry_on #Not actually needed as we're not assigning, but clearer
+    while (a < 10) & (carry_on) :
+        yield a			# Returns control and waits next call.
+        a = a + 1
 
 
-# Work out the distance between the two sets of y and xs.
-
-# Assign p0 and p1
-
-import math
-
-p0 = [x0,y0]
-p1 = [x1,y1]
+#animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=10)
+animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
 
 
-distance = math.sqrt(((p0[0]-p1[0])**2)+((p0[1]-p1[1])**2))
 
 
-print(distance)
+
+
+
+
+
+
+
+
+
+
+
+
+# Plot agents moving
+for i in range(num_of_agents):
+    matplotlib.pyplot.scatter(agents[i].x,agents[i].y)
+matplotlib.pyplot.imshow(environment)
+
+# Animation/Behaviour
+
+animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
+
