@@ -62,25 +62,6 @@ def update(frame_number):
     fig.clear()   
     global carry_on
     
-    for i in range(num_of_agents):
-        if random.random() < 0.5:
-            agents[i][0]  = (agents[i][0] + 1) % 99 
-        else:
-            agents[i][0]  = (agents[i][0] - 1) % 99
-        
-        if random.random() < 0.5:
-            agents[i][1]  = (agents[i][1] + 1) % 99 
-        else:
-            agents[i][1]  = (agents[i][1] - 1) % 99 
-        
-    if random.random() < 0.1:
-        carry_on = False
-        print("stopping condition")
-    
-    for i in range(num_of_agents):
-        matplotlib.pyplot.scatter(agents[i][0],agents[i][1])
-        #print(agents[i][0],agents[i][1])
-
 		
 def gen_function(b = [0]):
     a = 0
@@ -90,30 +71,11 @@ def gen_function(b = [0]):
         a = a + 1
 
 
-#animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=10)
-animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Plot agents moving
 for i in range(num_of_agents):
     matplotlib.pyplot.scatter(agents[i].x,agents[i].y)
 matplotlib.pyplot.imshow(environment)
 
-# Animation/Behaviour
-
-animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=num_of_iterations)
-
+#animation = matplotlib.animation.FuncAnimation(fig, update, interval=1, repeat=False, frames=10)
+animation = matplotlib.animation.FuncAnimation(fig, update, frames=gen_function, repeat=False)
+fig.show()
